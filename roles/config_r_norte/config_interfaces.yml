@@ -1,0 +1,31 @@
+## Configure the north router interfaces ##
+
+---
+- name: Configure the interfaces
+
+  hosts: r-norte
+  connection: local
+
+  tasks:
+
+    - name: Enable serial 6/0
+      ios_interface:
+        authorize: yes
+        auth_pass: ansible
+        name: Serial 6/0
+        description: Connection to r-oeste
+
+    - name: Configure serial 6/0
+      ios_config:
+        authorize: yes
+        auth_pass: ansible
+        lines:
+          - ip address {{ ip_r_norte_s6_0 }} {{ mask_r_norte_s6_0 }}
+        parents:
+          - interface {{ item.id }}
+
+        after: no shutdown
+
+      with_items:
+        - { id: Serial 6/0 }
+

@@ -1,0 +1,88 @@
+### CONFIG VLANS & INTERFACES ###
+
+---
+- name: Configuration of Interfaces for switches
+  hosts: sw-este
+  gather_facts: true
+  connection: local
+
+  tasks:
+  
+    - name: Register Facts
+      ios_facts:
+
+#Force trunking on Interface G1/0#
+
+    - name: Enable and describe G1/0
+      ios_interface:
+        authorize: yes
+        auth_pass: ansible
+        name: G1/0
+        description: trunk port
+
+    - name: Enable trunk mode on G1/0
+      ios_config:
+        authorize: yes
+        auth_pass: ansible
+        lines:
+          - switchport mode trunk
+          - switchport trunk encapsulation dot1Q
+          - switchport trunk native vlan 1
+        parents:
+          - interface GigabitEthernet 1/0
+
+
+####Assign G3/3 to VLAN 23#####
+    - name: Enable, describe G3/3
+      ios_interface:
+        authorize: yes
+        auth_pass: ansible
+        name: G3/3
+        description: Access to Vlan 23
+  
+    - name: Enable mode access on int G3/3
+      ios_config:
+        authorize: yes
+        auth_pass: ansible
+        lines:
+          - switchport mode access
+          - switchport access vlan 23
+        parents:
+          - interface GigabitEthernet 3/3
+
+###Assign all other ports as access ports and Shutdown####
+
+    - name: Modo access para las demás interfaces & Shutdown interfaces
+      ios_config:
+        authorize: yes
+        auth_pass: ansible
+        lines: 
+          - switchport mode access
+        parents: 
+          - interface range {{ item.name }}
+        after:
+          - shutdown
+      
+      with_items:
+        - { name: GigabitEthernet 0/1-3 }
+        - { name: GigabitEthernet 1/1-3 }
+        - { name: GigabitEthernet 2/0-3 }
+        - { name: GigabitEthernet 3/0-2 }
+    
+    - name: Show Running Config
+      ios_command:
+        authorize: yes
+        commands:
+          - show run | begin interface
+
+      register: sh_run_interface
+
+    - debug: var=sh_run_interface.stdout_lines
+ 
+    - name: save running to startup when modified
+      ios_config:
+        authorize: yes
+        auth_pass: ansible
+        save_when: modified
+
+      when: ansible_net_hostname == "sw-este"

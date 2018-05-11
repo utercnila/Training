@@ -1,0 +1,28 @@
+conf t
+hostname sw-oeste
+enable secret ansible
+service password-encryption
+no ip domain-lookup
+banner motd @ Unauthorized Access is Prohibited! @
+ip ssh version 2
+ip domain-name cisco.com
+username ansible secret ansible
+crypto key generate rsa
+ 1024
+ip ssh version 2
+line vty 0 15
+login local
+transport input ssh
+vlan 99 
+name Management
+interface vlan 99
+ ip address 192.168.99.11 255.255.255.0
+ no sh
+exit
+ip default-gateway 192.168.99.1
+interface g1/0
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk native vlan 1
+end
+

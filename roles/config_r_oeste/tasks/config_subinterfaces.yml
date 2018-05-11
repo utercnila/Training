@@ -1,0 +1,30 @@
+
+## Configure the subinterfaces for the VLAN 21 & 23
+---
+- name: Configuration for the subinterfaces
+  connection: local
+  hosts: r-oeste
+
+  tasks:
+    - include_vars: ../vars/main.yml
+    - name: Configure subinterfaces for VLAN 21 & 23
+      ios_config:
+        authorize: yes
+        auth_pass: ansible
+        parents:
+          - interface g3/0.{{ item.id }}
+        lines:
+          - description Contabilidad LAN
+          - encapsulation dot1q {{ item.id }}
+          - ip address {{ item.ip }} 255.255.255.0
+
+      with_items:
+        - { id: "{{ id_vlan21 }}", ip: "{{ ip_vlan21 }}" }
+        - { id: "{{ id_vlan23 }}", ip: "{{ ip_vlan23 }}" }
+       
+    - name: Save configuration
+      ios_command:
+        authorize: yes
+        auth_pass: ansible
+        commands:
+          - write memory

@@ -1,0 +1,49 @@
+## Configure the north router interfaces ##
+
+---
+- name: Configure the interfaces
+
+  hosts: r-norte
+  connection: local
+
+  tasks:
+    - include_vars: ../vars/main.yml
+    - name: Enable serial 6/0 & 6/1
+      ios_interface:
+        authorize: yes
+        auth_pass: ansible
+        name: "{{ item.id }}"
+        description: "{{ item.desc }}"
+      
+      with_items:
+        - { id: "{{ id_s6_0 }}", desc: "{{ desc_s6_0 }}" }
+        - { id: "{{ id_s6_1 }}", desc: "{{ desc_s6_1 }}" }
+
+    - name: Configure serial 6/0 & 6/1
+      ios_config:
+        authorize: yes
+        auth_pass: ansible
+        lines:
+          - ip address {{ item.ip }} {{ item.mask }}
+        parents:
+          - interface {{ item.id }}
+        after: no shutdown
+      
+      with_items:
+        - { id: "{{ id_s6_1 }}", ip: "{{ ip_r_norte_s6_1 }}", mask: "{{ mask_r_norte_s6_1 }}" }
+  
+    - name: Enable Clock Rate Serial 6/1
+      ios_config:
+        authorize: yes
+        auth_pass: ansible
+        lines: 
+          - clock rate 128000
+        parents: 
+          - interface Serial 6/1
+
+    - name: Save configuration
+      ios_command:
+        authorize: yes
+        auth_pass: ansible
+        commands:
+          - write memory

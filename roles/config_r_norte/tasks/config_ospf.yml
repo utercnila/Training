@@ -1,0 +1,16 @@
+---
+- name: Enable Ospf on r-norte
+
+  hosts: r-norte
+  connection: local
+
+  tasks: 
+    - include_vars: ../vars/main.yml
+    - name: Enable OSPF on R-norte
+      ios_config:
+        authorize: yes
+        auth_pass: ansible
+        lines:
+          - network {{ ip_lanS6_1 }} {{ wildmask_lanS6_1 }} area {{ area }}
+        parents:
+          - router ospf 1

@@ -1,0 +1,28 @@
+---
+# vars file for config_r_oeste
+parent: router ospf 1
+area: 1
+## Configuration for OSPF (networks) ## 
+ip_lan99: 192.168.99.0
+wildmask_lan99: 0.0.0.255
+
+ip_lan21: 192.168.21.0
+wildmask_lan21: 0.0.0.255
+
+ip_lan23: 192.168.23.0
+wildmask_lan23: 0.0.0.255
+
+ip_s6_0: 172.16.1.0
+wildmask_s6_0: 0.0.0.3
+
+## Subinterface for Vlan21 ##
+id_vlan21: 21
+ip_vlan21: 192.168.21.1
+
+## Subinterface for Vlan23 ##
+id_vlan23: 23
+ip_vlan23: 192.168.23.1
+
+## Ip for serial6/0 ##
+ips60: 172.16.1.1
+mask_r_oeste_s6_0: 255.255.255.252

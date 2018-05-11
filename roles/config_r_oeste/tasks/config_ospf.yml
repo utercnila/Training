@@ -1,0 +1,27 @@
+---
+- name: Enable Ospf on r-oeste
+
+  hosts: r-oeste
+  connection: local
+
+  tasks:
+    - include_vars: ../vars/main.yml
+    - name: Enable OSPF on R-oeste
+      ios_config:
+        authorize: yes
+        auth_pass: ansible
+        lines:
+          - network {{ ip_lan23 }} {{ wildmask_lan23 }} area {{ area }}
+          - network {{ ip_lan21 }} {{ wildmask_lan21 }} area {{ area }}
+          - network {{ ip_lan99 }} {{ wildmask_lan99 }} area {{ area }}
+          - network {{ ip_s6_0 }} {{ wildmask_s6_0 }} area {{ area }}
+        parents:
+          - router ospf 1
+
+    - name: Save configuration
+      ios_command:
+        authorize: yes
+        auth_pass: ansible
+        commands:
+          - write memory
+

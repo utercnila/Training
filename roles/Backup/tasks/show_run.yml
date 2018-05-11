@@ -1,0 +1,19 @@
+---
+- name: Backup configuration
+  hosts: r-oeste
+  gather_facts: false
+  connection: local
+
+  tasks:
+    - name: Show devices' startup-config
+      ios_command:
+        authorize: yes
+        auth_pass: ansible
+        commands:
+          - show start
+
+      register: print
+    - debug: var=print.stdout_lines
+
+    - name: Save configuration to a file
+      copy: content="{{ print.stdout[0] }}" dest="/root/Training/backups/{{ inventory_hostname }}.txt"

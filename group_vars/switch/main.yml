@@ -1,0 +1,10 @@
+---
+
+# Id for VLANs #
+id_vlan21: 21
+id_vlan23: 23
+
+# Name for VLANs #
+name_vlan21: Contabilidad
+name_vlan23: Ingenieria
+

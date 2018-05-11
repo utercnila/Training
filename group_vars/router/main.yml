@@ -1,0 +1,6 @@
+---
+
+## Variables for OSPF ##
+
+area: 1
+#ips60: 172.16.1.1

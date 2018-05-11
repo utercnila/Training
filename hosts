@@ -1,0 +1,9 @@
+[switch]
+sw-este
+sw-oeste
+
+[router]
+r-oeste
+r-norte
+r-este
+

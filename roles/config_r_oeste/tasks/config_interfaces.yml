@@ -1,0 +1,38 @@
+## Configure the router's interfaces ##
+
+---
+- name: Configure the interfaces
+
+  hosts: r-oeste
+  connection: local
+  
+  tasks:
+    - include_vars: ../vars/main.yml         
+    - name: Enable serial 6/0
+      ios_interface:
+        authorize: yes
+        auth_pass: ansible
+        name: Serial 6/0
+        description: to r-norte
+    
+    - name: Configure serial 6/0
+      ios_config:
+        authorize: yes
+        auth_pass: ansible
+        lines:
+          - ip address {{ ips60 }} {{ mask_r_oeste_s6_0 }}
+          - clock rate 128000
+        parents:
+          - interface {{ item.id }}
+
+        after: no shutdown
+
+      with_items:
+        - { id: Serial 6/0 }
+
+    - name: Save configuration
+      ios_command:
+        authorize: yes
+        auth_pass: ansible
+        commands:
+          - write memory

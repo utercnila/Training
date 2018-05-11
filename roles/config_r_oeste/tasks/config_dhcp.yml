@@ -1,0 +1,48 @@
+---
+- name: Configure DHCP for VLAN 21 and 23
+
+  connection: local
+  hosts: r-oeste
+  
+  tasks:
+  
+    - name: Reserve the first 20 ip addresses in VLAN 21 & 23 for static config
+      ios_config:
+        authorize: yes
+        auth_pass: ansible
+        lines: 
+          - ip dhcp excluded-address {{ item.ip_inicio }} {{ item.ip_fin }}
+      with_items:
+        - { ip_inicio: 192.168.21.1, ip_fin: 192.168.21.20 }
+        - { ip_inicio: 192.168.23.1, ip_fin: 192.168.23.20 }
+
+    - name: Create the DHCP pools for VLAN 21 & 23
+      ios_config:
+        authorize: yes
+        auth_pass: ansible
+        lines:
+          - network {{ item.ip_vlan }} 255.255.255.0
+          - domain-name ccna-sa.com
+          - dns-server {{ item.ip_dns }}
+          - default-router {{ item.ip_default }}
+        parents: 
+          - ip dhcp pool "{{ item.name }}"
+      with_items:
+        - { name: Contabilidad, ip_vlan: 192.168.21.0, ip_dns: 10.10.10.10, ip_default: 192.168.21.1 }
+        - { name: Ingenieria, ip_vlan: 192.168.23.0, ip_dns: 10.10.10.10, ip_default: 192.168.23.1 }
+
+    - name: Show run | section DHCP
+      ios_command:
+        authorize: yes
+        commands:
+          - show run | section dhcp
+      register: sh_dhcp
+
+    - debug: var=sh_dhcp.stdout_lines
+
+    - name: Save configuration
+      ios_command:
+        authorize: yes
+        auth_pass: ansible
+        commands: 
+          - write memory

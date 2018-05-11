@@ -1,0 +1,22 @@
+conf t
+hostname r-norte
+enable secret ansible
+service password-encryption
+no ip domain-lookup
+banner motd @ Unauthorized Access is Prohibited! @
+ip ssh version 2
+ip domain-name cisco.com
+username ansible secret ansible
+crypto key generate rsa
+ 1024
+ip ssh version 2
+line vty 0 15
+login local
+transport input ssh
+interface serial 6/0
+ ip address 172.16.1.2 255.255.255.252
+ no sh
+router ospf 1
+ network 172.16.1.0 0.0.0.3 area 1
+end
+

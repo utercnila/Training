@@ -1,0 +1,17 @@
+---
+# vars file for config_r_norte
+
+## Ip for Serial 6/0 ##
+desc_s6_0: Connection to r-oeste
+id_s6_0: Serial 6/0
+ip_r_norte_s6_0: 172.16.1.2
+mask_r_norte_s6_0: 255.255.255.252
+
+## Ip for Serial 6/1 ##
+desc_s6_1: Connection to r-este
+id_s6_1: Serial 6/1
+ip_r_norte_s6_1: 172.16.2.2
+mask_r_norte_s6_1: 255.255.255.252
+ip_lanS6_1: 172.16.2.0
+wildmask_lanS6_1: 0.0.0.3
+

@@ -1,0 +1,23 @@
+conf t
+hostname r-oeste
+enable secret ansible
+service password-encryption
+no ip domain-lookup
+banner motd @ Unauthorized Access is Prohibited! @
+ip ssh version 2
+ip domain-name cisco.com
+username ansible secret ansible
+crypto key generate rsa
+ 1024
+ip ssh version 2
+line vty 0 15
+login local
+transport input ssh
+interface g3/0.99
+ description Management LAN
+ encapsulation dot1q 99
+ ip address 192.168.99.1 255.255.255.0
+interface g3/0
+ no sh
+end 
+

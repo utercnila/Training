@@ -1,0 +1,9 @@
+---
+- name: clock
+  ios_config:
+    authorize: yes
+    auth_pass: ansible
+    lines:
+      - clock rate 128000
+     parents:
+      - interface Serial 6/1
