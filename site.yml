@@ -2,4 +2,5 @@
 - hosts: all
   gather_facts: no
 
-- import_playbook: /roles/config_sw_oeste/tasks/create_vlan.yml
+  roles:
+    - config_sw_este
