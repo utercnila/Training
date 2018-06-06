@@ -1,2 +1,4 @@
 ---
 # tasks file for config_sw_este
+
+- include: create_vlan.yml
